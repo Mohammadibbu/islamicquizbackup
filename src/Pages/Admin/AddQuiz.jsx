@@ -3,8 +3,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import app from "../../DB/Firebase.js"; // Ensure Firebase configuration is correct
-import { FaArrowLeft, FaSpinner, FaCheckCircle } from "react-icons/fa";
+import { FaArrowLeft, FaSpinner, FaCheckCircle, FaPlusCircle } from "react-icons/fa";
 import Toastify, { showToast } from "../../Components/notify/Toastify.jsx";
+import PageHeader from "../../Components/PageHeader";
+import LoadingSpinner from "../../Components/LoadingSpinner";
 const db = getFirestore(app);
 
 const AddQuiz = () => {
@@ -78,108 +80,118 @@ const AddQuiz = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 fade-in-up">
       <Toastify />
 
-      <div className="text-center mb-3">
-        <Link to="/admin/Dashboard" className="btn btn-secondary">
-          <FaArrowLeft /> மேலாளர் பக்கம்
-        </Link>
-      </div>
+      <PageHeader 
+        title="📌 கேள்வி சேர்க்க" 
+        subtitle="புதிய கேள்வியை உள்ளிடவும்" 
+        backLink="/admin/Dashboard"
+        icon={FaPlusCircle}
+      />
 
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
-          <div className="card shadow rounded p-4 bg-white">
-            <h2 className="text-center mb-4">
-              📌 கேள்வி சேர்க்க <FaCheckCircle />
-            </h2>
+        <div className="col-12 col-md-10 col-lg-8">
+          <div className="card shadow-custom border-0 slide-in-right">
+            <div className="card-body p-4">
             <form onSubmit={handleSubmit}>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label fw-bold">🔢 கேள்வி எண்</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className="form-control form-control-lg"
                   value={questionNumber}
                   placeholder="கேள்வி எண்ணை உள்ளிடவும் "
                   onChange={(e) => setQuestionNumber(e.target.value)}
                   required
                 />
               </div>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label fw-bold">🔹 கேள்வி</label>
                 <textarea
-                  className="form-control"
+                  className="form-control form-control-lg"
                   value={question}
-                  rows="3"
+                  rows="4"
                   placeholder="கேள்வியை உள்ளிடவும்"
                   onChange={(e) => setQuestion(e.target.value)}
                   required
                 ></textarea>
               </div>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label fw-bold">
                   📖 படிக்க வேண்டிய அத்தியாயம்
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-lg"
                   value={Aththiyayam}
                   placeholder="2:1-10,அத்தியாயம் பெயர்  "
                   onChange={(e) => setAththiyayam(e.target.value)}
                   required
                 />
               </div>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label fw-bold">✅ சரியான பதில்</label>
                 <textarea
                   type="text"
-                  className="form-control"
-                  rows="3"
+                  className="form-control form-control-lg"
+                  rows="4"
                   value={answer}
                   placeholder="சரியான பதிலை உள்ளிடவும்"
                   onChange={(e) => setAnswer(e.target.value)}
                 ></textarea>
               </div>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label fw-bold">
                   ⏳ கேள்வி வெளியீட்டு நேரம்
                 </label>
                 <input
                   type="datetime-local"
-                  className="form-control"
+                  className="form-control form-control-lg"
                   value={scheduleTime}
                   min={new Date().toISOString().slice(0, 16)}
                   onChange={(e) => setScheduleTime(e.target.value)}
                   required
                 />
-                <span className="text-muted small">
+                <div className="form-text text-muted">
                   {convert24to12(scheduleTime)}
-                </span>
+                </div>
               </div>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label className="form-label fw-bold">
                   📅 முடிவு வெளியீட்டு நேரம்
                 </label>
                 <input
                   type="datetime-local"
-                  className="form-control"
+                  className="form-control form-control-lg"
                   min={new Date().toISOString().slice(0, 16)}
                   value={resultTime}
                   onChange={(e) => setResultTime(e.target.value)}
                   required
                 />
-                <span className="text-muted small">
+                <div className="form-text text-muted">
                   {convert24to12(resultTime)}
-                </span>
+                </div>
               </div>
               <button
                 type="submit"
-                className="btn btn-primary w-100"
+                className="btn btn-primary btn-lg w-100"
                 disabled={loading}
               >
-                {loading ? <FaSpinner className="spin" /> : "✅ கேள்வியை சேர்"}
+                {loading ? (
+                  <>
+                    <FaSpinner className="spin me-2" />
+                    சேர்க்கப்படுகிறது...
+                  </>
+                ) : (
+                  <>
+                    <FaCheckCircle className="me-2" />
+                    ✅ கேள்வியை சேர்
+                  </>
+                )}
               </button>
             </form>
+            </div>
           </div>
         </div>
       </div>

@@ -14,8 +14,12 @@ import {
 } from "firebase/firestore";
 import app from "../DB/Firebase";
 import Result from "../Components/Result";
+import LoadingSpinner from "../Components/LoadingSpinner";
+import CountdownTimer from "../Components/CountdownTimer";
 import Cookies from "js-cookie";
 import Toastify, { showToast } from "../Components/notify/Toastify";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle, faEdit, faTimes, faCheck, faHome } from '@fortawesome/free-solid-svg-icons';
 
 const db = getFirestore(app);
 
@@ -272,185 +276,223 @@ const Home = () => {
     )}:${String(seconds).padStart(2, "0")} ${ampm}`;
   }
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 fade-in-up">
       <Toastify />
-      <h2 className="text-center">🏠 முகப்பு பக்கம்</h2>
+      
+      {/* Enhanced Header */}
+      <div className="text-center mb-5">
+        <FontAwesomeIcon icon={faHome} className="text-primary mb-3" size="3x" />
+        <h1 className="text-gradient display-4 mb-2">🏠 முகப்பு பக்கம்</h1>
+        <p className="text-muted fs-5">இஸ்லாமிய அறிவு போட்டி</p>
+      </div>
 
       {loading ? (
-        // Show loading spinner while the content is loading
-        <div className="d-flex justify-content-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
+        <LoadingSpinner size="lg" text="தகவல்களை ஏற்றுகிறது..." />
       ) : latestQuestion ? (
         remainingTime > 0 ? (
-          <div className="card shadow-lg border-0 p-4 text-center">
-            <h4 className="fw-bold text-primary mb-3">📖 இன்றைய தகவல்</h4>
-            <div className="p-2">
-              <p className="text-danger fw-bold ">
+          <div className="card shadow-custom border-0 slide-in-right">
+            <div className="card-header text-center">
+              <h4 className="fw-bold mb-0">
+                <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+                📖 இன்றைய தகவல்
+              </h4>
+            </div>
+            <div className="card-body text-center">
+              <div className="alert alert-danger border-radius-custom mb-4">
+                <p className="fw-bold mb-0">
                 {showathiyaayam(latestQuestion.Aththiyayam)}
               </p>
             </div>
-            <div className="alert alert-info mt-3 fw-bold">
-              ⏳ <span className="text-dark">கேள்வி வெளியீடு:</span>{" "}
-              <i className="text-danger">
-                {formatTimestamp(latestQuestion.scheduleTime, "T") || ""}
-              </i>
-              <p className="text-dark fw-bold">
-                இன்னும்{" "}
-                <i className="text-danger ">{formatTime(remainingTime)}</i>{" "}
-                நேரத்தில் கேள்வி கேட்கப்படும்.
-              </p>
-            </div>
+              
+              <div className="mb-3">
+                <span className="badge bg-primary fs-6 p-2">
+                  கேள்வி வெளியீடு: {formatTimestamp(latestQuestion.scheduleTime, "T") || ""}
+                </span>
+              </div>
+              
+              <CountdownTimer 
+                time={remainingTime} 
+                label="இன்னும் நேரத்தில் கேள்வி கேட்கப்படும்" 
+                variant="info"
+              />
 
-            <blockquote className="blockquote mt-4 p-3 bg-secondary text-white rounded">
-              <p className="mb-2 fw-bolder">
-                “அல்லாஹ்வுடைய வீடுகளில் ஒரு வீட்டில் மக்கள் கூடி அல்லாஹ்வுடைய
-                வேதத்தை ஓதி தங்களுக்கு மத்தியில் அதை ஓதிக் காட்டி, பாடம்
-                படிக்கும் போது அமைதி அவர்கள் மீது இறங்காமல் இருக்காது. அவர்களை
-                அருள் அரவணைத்துக் கொள்கின்றது. மலக்குகள் அவர்களைச் சூழ்ந்து
-                விடுகின்றனர். குர்ஆன் ஓதும் அவர்களை அல்லாஹ் தன்னிடம் உள்ள
-                மலக்குகளிடம் நினைவு கூர்கின்றான்”என்று அல்லாஹ்வின் தூதர் (ஸல்)
-                அவர்கள் கூறினார்கள்.
-              </p>
-              <footer className="blockquote-footer text-light">
-                <i>அறி : அபூஹுரைரா (ரலி), நூல் : முஸ்லிம்</i>
-              </footer>
-            </blockquote>
+              <div className="mt-4">
+                <blockquote className="blockquote p-4 bg-gradient-secondary text-dark rounded border-radius-custom">
+                  <p className="mb-3 fw-bold">
+                    "அல்லாஹ்வுடைய வீடுகளில் ஒரு வீட்டில் மக்கள் கூடி அல்லாஹ்வுடைய
+                    வேதத்தை ஓதி தங்களுக்கு மத்தியில் அதை ஓதிக் காட்டி, பாடம்
+                    படிக்கும் போது அமைதி அவர்கள் மீது இறங்காமல் இருக்காது. அவர்களை
+                    அருள் அரவணைத்துக் கொள்கின்றது. மலக்குகள் அவர்களைச் சூழ்ந்து
+                    விடுகின்றனர். குர்ஆன் ஓதும் அவர்களை அல்லாஹ் தன்னிடம் உள்ள
+                    மலக்குகளிடம் நினைவு கூர்கின்றான்"என்று அல்லாஹ்வின் தூதர் (ஸல்)
+                    அவர்கள் கூறினார்கள்.
+                  </p>
+                  <footer className="blockquote-footer">
+                    <cite>அறி : அபூஹுரைரா (ரலி), நூல் : முஸ்லிம்</cite>
+                  </footer>
+                </blockquote>
+              </div>
+            </div>
           </div>
         ) : answerTime > 0 ? (
-          <div className="card mt-3 shadow-lg border-0 rounded-3">
-            <div className="card-body text-center">
-              <h4 className="card-title text-primary fw-bold">
+          <div className="card shadow-custom border-0 slide-in-right">
+            <div className="card-header text-center">
+              <h4 className="fw-bold mb-0">
+                <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
                 📖 இன்றைய கேள்வி
               </h4>
-              <div className="card border-0 p-3 bg-light shadow-sm">
-                <p className="fw-bold fs-5 mb-0">{latestQuestion.question}</p>
+            </div>
+            <div className="card-body text-center">
+              <div className="alert alert-light border-radius-custom p-4 mb-4">
+                <p className="fw-bold fs-5 text-dark mb-0">{latestQuestion.question}</p>
               </div>
-              <p className="mt-3 text-danger fw-bold fs-6">
+              
+              <div className="alert alert-warning border-radius-custom mb-4">
+                <p className="fw-bold mb-0">
                 {showathiyaayam(latestQuestion.Aththiyayam)}
-              </p>
-              <div className="alert alert-warning mt-3 fw-bold">
-                ⏳{" "}
-                <span className="text-dark">பதில் அளிக்க வேண்டிய நேரம்:</span>{" "}
-                {formatTime(answerTime)}
+                </p>
               </div>
+              
+              <CountdownTimer 
+                time={answerTime} 
+                label="பதில் அளிக்க வேண்டிய நேரம்" 
+                variant="warning"
+              />
+              
               {showAnswerButton && (
                 <button
-                  className="btn btn-primary mt-3"
+                  className="btn btn-primary btn-lg mt-3 pulse-animation"
                   onClick={() => setShowAnswerForm(true)}
                 >
+                  <FontAwesomeIcon icon={faEdit} className="me-2" />
                   ✍️ பதிலை உள்ளிடு
                 </button>
               )}
 
               {showAnswerForm && (
-                <form
+                <div className="card mt-4 border-radius-custom">
+                  <div className="card-body">
+                    <form
                   onSubmit={handleSubmitAnswer}
-                  className="mt-3 p-3 border rounded bg-light"
                 >
-                  <div className="mb-3">
-                    <label className="form-label fw-bold">👤 பெயர்</label>
-                    <select
-                      className="form-control"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    >
-                      <option value="">-- பெயரை தேர்வு செய்க --</option>
-                      {users.map((user) => (
-                        <option
-                          key={user.id}
-                          value={user.name}
-                          disabled={submittedUsers.has(user.name)}
+                      <div className="mb-4">
+                        <label className="form-label fw-bold">👤 பெயர்</label>
+                        <select
+                          className="form-control form-control-lg"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                         >
-                          {user.name}{" "}
-                          {submittedUsers.has(user.name)
-                            ? "✅ (சமர்ப்பிக்கப்பட்டது)"
-                            : ""}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                          <option value="">-- பெயரை தேர்வு செய்க --</option>
+                          {users.map((user) => (
+                            <option
+                              key={user.id}
+                              value={user.name}
+                              disabled={submittedUsers.has(user.name)}
+                            >
+                              {user.name}{" "}
+                              {submittedUsers.has(user.name)
+                                ? "✅ (சமர்ப்பிக்கப்பட்டது)"
+                                : ""}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-                  <div className="mb-3">
-                    <label className="form-label fw-bold">✍️ பதில்</label>
-                    <textarea
-                      className="form-control"
-                      rows="3"
-                      value={answer}
-                      onChange={(e) => setAnswer(e.target.value)}
-                    ></textarea>
-                  </div>
+                      <div className="mb-4">
+                        <label className="form-label fw-bold">✍️ பதில்</label>
+                        <textarea
+                          className="form-control form-control-lg"
+                          rows="4"
+                          value={answer}
+                          placeholder="உங்கள் பதிலை இங்கே எழுதுங்கள்..."
+                          onChange={(e) => setAnswer(e.target.value)}
+                        ></textarea>
+                      </div>
 
-                  <div className="d-flex gap-2">
-                    <button
-                      type="submit"
-                      className="btn btn-success w-50"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting
-                        ? "⏳ சமர்ப்பிக்கப்படுகிறது..."
-                        : "✅ சமர்ப்பி"}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary w-50"
-                      onClick={() => setShowAnswerForm(false)}
-                    >
-                      ❌ ரத்துசெய்
-                    </button>
+                      <div className="d-flex gap-3">
+                        <button
+                          type="submit"
+                          className="btn btn-success btn-lg flex-fill"
+                          disabled={isSubmitting}
+                        >
+                          <FontAwesomeIcon icon={faCheck} className="me-2" />
+                          {isSubmitting
+                            ? "⏳ சமர்ப்பிக்கப்படுகிறது..."
+                            : "✅ சமர்ப்பி"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-lg flex-fill"
+                          onClick={() => setShowAnswerForm(false)}
+                        >
+                          <FontAwesomeIcon icon={faTimes} className="me-2" />
+                          ❌ ரத்துசெய்
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                </form>
+                </div>
               )}
 
               {acknowledgment && (
-                <div className="alert alert-success mt-3">{acknowledgment}</div>
+                <div className="alert alert-success mt-4 border-radius-custom fade-in-up">
+                  <FontAwesomeIcon icon={faCheck} className="me-2" />
+                  {acknowledgment}
+                </div>
               )}
             </div>
           </div>
         ) : resultTime > 0 ? (
-          <div className="card shadow-lg border-0 p-4 text-center">
-            {/* <h4 className="fw-bold text-primary mb-3">📖 இன்றைய தகவல்</h4> */}
-
-            <div className="alert alert-info mt-3 fw-bold">
-              ⏳ <span className="text-dark">முடிவு வெளியீடு நேரம்:</span>{" "}
-              <i className="text-danger">
-                {formatTimestamp(latestQuestion.resultTime, "T") || ""}
-              </i>
-              <p className="text-dark fw-bold">
-                இன்னும் {"  "}
-                <i className="text-danger ">{formatTime(resultTime)}</i>
-                {"  "}
-                நேரத்தில் முடிவு வெளியிடப்படும்..
-              </p>
+          <div className="card shadow-custom border-0 slide-in-right">
+            <div className="card-header text-center">
+              <h4 className="fw-bold mb-0">
+                <FontAwesomeIcon icon={faClock} className="me-2" />
+                முடிவு வெளியீடு
+              </h4>
             </div>
+            <div className="card-body text-center">
+              <div className="mb-3">
+                <span className="badge bg-info fs-6 p-2">
+                  முடிவு வெளியீடு நேரம்: {formatTimestamp(latestQuestion.resultTime, "T") || ""}
+                </span>
+              </div>
+              
+              <CountdownTimer 
+                time={resultTime} 
+                label="இன்னும் நேரத்தில் முடிவு வெளியிடப்படும்" 
+                variant="info"
+              />
 
-            <blockquote className="blockquote mt-4 p-3 bg-secondary text-white rounded">
-              <p className="mb-2 fw-bolder">
-                நபி (ஸல்) அவர்கள் கூறினார்கள்: குர்ஆனை ஓதுகின்ற(நல்ல)வரின்
-                நிலையானது எலுமிச்சை போன்றதாகும். அதன் சுவையும் நன்று! வாசனையும்
-                நன்று! (நல்லவராக இருந்து) குர்ஆன் ஓதாமல் இருப்பவர், பேரீச்சம்
-                பழத்தைப் போன்றவராவார். அதன் சுவை நன்று; அதற்கு வாசனை கிடையாது.
-                தீயவனாகவும் இருந்து கொண்டு குர்ஆனை ஓதி வருகின்றவனின் நிலை
-                துளசிச் செடியின் நிலையை ஒத்து இருக்கின்றது. அதன் வாசனை நன்று,
-                சுவையோ கசப்பு! தீமையும் செய்து கொண்டு குர்ஆனையும் ஓதாமல்
-                இருப்பவனின் நிலை குமட்டிக் காயின் நிலையை ஒத்திருக்கின்றது. அதன்
-                சுவையும் கசப்பு, அதற்கு வாசனையும் கிடையாது.
-              </p>
-              <footer className="blockquote-footer text-light">
-                <i>அறி : அபூ மூஸல் அஷ்அரீ (ரலி)</i>
-              </footer>
-            </blockquote>
+              <div className="mt-4">
+                <blockquote className="blockquote p-4 bg-gradient-secondary text-dark rounded border-radius-custom">
+                  <p className="mb-3 fw-bold">
+                    நபி (ஸல்) அவர்கள் கூறினார்கள்: குர்ஆனை ஓதுகின்ற(நல்ல)வரின்
+                    நிலையானது எலுமிச்சை போன்றதாகும். அதன் சுவையும் நன்று! வாசனையும்
+                    நன்று! (நல்லவராக இருந்து) குர்ஆன் ஓதாமல் இருப்பவர், பேரீச்சம்
+                    பழத்தைப் போன்றவராவார். அதன் சுவை நன்று; அதற்கு வாசனை கிடையாது.
+                    தீயவனாகவும் இருந்து கொண்டு குர்ஆனை ஓதி வருகின்றவனின் நிலை
+                    துளசிச் செடியின் நிலையை ஒத்து இருக்கின்றது. அதன் வாசனை நன்று,
+                    சுவையோ கசப்பு! தீமையும் செய்து கொண்டு குர்ஆனையும் ஓதாமல்
+                    இருப்பவனின் நிலை குமட்டிக் காயின் நிலையை ஒத்திருக்கின்றது. அதன்
+                    சுவையும் கசப்பு, அதற்கு வாசனையும் கிடையாது.
+                  </p>
+                  <footer className="blockquote-footer">
+                    <cite>அறி : அபூ மூஸல் அஷ்அரீ (ரலி)</cite>
+                  </footer>
+                </blockquote>
+              </div>
+            </div>
           </div>
         ) : (
           <Result latestQuestion={latestQuestion} />
         )
       ) : (
-        <div className="alert alert-danger text-center mt-3">
-          <b>
-            இன்ஷா அல்லாஹ் <br></br> 📢 கேள்வி விரைவில் சேர்க்கப்படும்...
-          </b>
+        <div className="card shadow-custom border-0 text-center">
+          <div className="card-body p-5">
+            <FontAwesomeIcon icon={faQuestionCircle} className="text-muted mb-4" size="4x" />
+            <h3 className="text-muted mb-3">இன்ஷா அல்லாஹ்</h3>
+            <p className="fs-5 text-muted">📢 கேள்வி விரைவில் சேர்க்கப்படும்...</p>
+          </div>
         </div>
       )}
     </div>
